@@ -71,9 +71,7 @@ const UserTable: React.FC = () => {
         <Space size="middle">
           <EditOutlined
             onClick={() => {
-              console.log(user, 'edit bata aako');
               navigate(`/${user.id}/edit`);
-              // editHandler(user);
             }}
           />
           <DeleteOutlined

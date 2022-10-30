@@ -1,7 +1,6 @@
-import { Button, Form, Input, Modal } from 'antd';
-import { title } from 'process';
-import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Button, Form, Input } from 'antd';
+import React, { useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 
 type UserDataType = {
   title: string;
@@ -44,10 +43,8 @@ const User: React.FC = (props) => {
     console.log('Failed:', errorInfo);
   };
 
-  const editTaskHandler = async (id: string, values: any) => {
-    console.log(values);
-    let data = { ...values };
-    let response = await fetch(
+  const editTaskHandler = async (id: string, values: UserDataType) => {
+     await fetch(
       `https://tasks-8c581-default-rtdb.firebaseio.com/tasks/${id}.json`,
       {
         method: 'PUT',
@@ -100,8 +97,7 @@ const User: React.FC = (props) => {
 
       <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
         <Button type="primary" htmlType="submit">
-          {/* {user ? "Update" : "Submit"} */}
-          Submit
+          {userId ? "Update" : "Submit"}
         </Button>
       </Form.Item>
     </Form>
