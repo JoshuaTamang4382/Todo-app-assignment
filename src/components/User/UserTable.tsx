@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
+import classes from './userTable.module.css';
 import { Button, Space, Table, Tag } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
+import DeleteModal from "../UI/Modal";
 
 interface UserDataType {
-    title : string;
-    description : string;
+  id: string;
+  title : string;
+  description : string;
 } 
 
 const UserTable : React.FC = () => {
@@ -18,28 +21,29 @@ const UserTable : React.FC = () => {
     },[]);
 
     const fetchDataHandler = async() => {
-        const response = await fetch('https://tasks-8c581-default-rtdb.firebaseio.com/tasks.json');
-        const responseData = await response.json();
-        // console.log(responseData, 'aako data');
+      const response = await fetch('https://tasks-8c581-default-rtdb.firebaseio.com/tasks.json');
+      const responseData = await response.json();
+      // console.log(responseData, 'aako data');
 
-        const loadedTasks = [];
+      const loadedTasks = [];
 
-        for( const key in responseData){
-          loadedTasks.push({
-            id: key,
-            title: responseData[key].title,
-            description: responseData[key].description,
-          })
-        }
+      for( const key in responseData){
+        loadedTasks.push({
+          id: key,
+          title: responseData[key].title,
+          description: responseData[key].description,
+        })
+      }
 
-        setUserData(loadedTasks);
+      setUserData(loadedTasks);
     }
 
-    const deleteHandler = async() => {
+    const deleteHandler = async(id : string) => {
       console.log('delete han chito');
-      await fetch('https://tasks-8c581-default-rtdb.firebaseio.com/tasks.json', {
+      await fetch('https://tasks-8c581-default-rtdb.firebaseio.com/tasks/' + id + '.json', {
         method: 'DELETE',
       });
+      fetchDataHandler();
     }
 
     const columns: ColumnsType<UserDataType> = [
@@ -56,12 +60,16 @@ const UserTable : React.FC = () => {
         {
           title: 'Action',
           key: 'action',
-          render: (index) => (
+          render: (user) => (
             <Space size="middle">
-              <EditOutlined />
+              <EditOutlined onClick={() => {
+                console.log(user,'edit bata aako');
+                navigate(`/${user.id}`);
+                // editHandler(user);
+              }}/>
               <DeleteOutlined onClick={() => {
-                console.log(index);
-                // deleteHandler();
+                console.log(user.id);
+                deleteHandler(user.id);
               }}/>
             </Space>
           ),
@@ -77,11 +85,12 @@ const UserTable : React.FC = () => {
 
     return (
       <>
-        <div className="title">
+        <div className={classes.title}>
           <h1>List of Users</h1>
           <Button onClick={() => navigate("/user")}>Add New</Button>
         </div>
         <Table columns={columns} dataSource={userData} />
+        <DeleteModal></DeleteModal>
       </>
     )
 }

@@ -3,6 +3,7 @@ import React from 'react';
 import './App.css';
 import User from './components/User/User';
 import UserTable from './components/User/UserTable';
+import "antd/dist/antd.css";
 import Router from './routes';
 
 function App() {
