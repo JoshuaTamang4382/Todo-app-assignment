@@ -6,8 +6,9 @@ const Router = () => {
   return (
     <Routes>
       <Route path="/" element={<UserTable/>} />
+      <Route path="/createUser" element={<User/>} />
       <Route 
-        path="/:userId" 
+        path="/:userId/edit" 
         element={<User/>} />
     </Routes>
   )

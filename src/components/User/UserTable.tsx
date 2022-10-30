@@ -64,7 +64,7 @@ const UserTable : React.FC = () => {
             <Space size="middle">
               <EditOutlined onClick={() => {
                 console.log(user,'edit bata aako');
-                navigate(`/${user.id}`);
+                navigate(`/${user.id}/edit`);
                 // editHandler(user);
               }}/>
               <DeleteOutlined onClick={() => {
@@ -87,7 +87,7 @@ const UserTable : React.FC = () => {
       <>
         <div className={classes.title}>
           <h1>List of Users</h1>
-          <Button onClick={() => navigate("/user")}>Add New</Button>
+          <Button onClick={() => navigate("/createUser")}>Add New</Button>
         </div>
         <Table columns={columns} dataSource={userData} />
         <DeleteModal></DeleteModal>

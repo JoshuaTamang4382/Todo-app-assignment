@@ -17,6 +17,7 @@ const User: React.FC = (props) => {
   });
 
   useEffect(() => {
+    console.log(userId,'userID ko lagi');
     if(userId){
       fetchUser(userId);
     }
@@ -25,18 +26,18 @@ const User: React.FC = (props) => {
   const fetchUser = async(id: string) => {
     const response = await fetch('https://tasks-8c581-default-rtdb.firebaseio.com/tasks/' + id + '.json');
     const responseData = await response.json();
-    console.log(responseData, 'single ueserid');
+    console.log(responseData, 'single userid');
     setUser(responseData);
     console.log(user,'initial values')
   }
 
   const onFinish = (values: UserDataType) => {
     console.log('Success:', values);
-    if(user){
-      editTaskHandler(values)
-    } else {
+    // if(user){
+      // editTaskHandler(values)
+    // } else {
       createTaskHandler(values);
-    }
+    // }
   };
 
   const onFinishFailed = (errorInfo: any) => {
@@ -97,7 +98,8 @@ const User: React.FC = (props) => {
 
         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
           <Button type="primary" htmlType="submit">
-            {user ? "Update" : "Submit"}
+            {/* {user ? "Update" : "Submit"} */}
+            Submit
           </Button>
         </Form.Item>
       </Form>
