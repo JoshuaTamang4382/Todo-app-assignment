@@ -1,108 +1,110 @@
 import { Button, Form, Input, Modal } from 'antd';
+import { title } from 'process';
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 type UserDataType = {
-  title : string;
-  description : string;
-}
-
+  title: string;
+  description: string;
+};
 
 const User: React.FC = (props) => {
-  let navigate = useNavigate();
+  const [form] = Form.useForm();
+  const navigate = useNavigate();
   const { userId } = useParams();
-  const [user,setUser] = useState({
-    title : '',
-    description : ''
-  });
+  const initialValues = {
+    title: '',
+    description: '',
+  };
 
   useEffect(() => {
-    console.log(userId,'userID ko lagi');
-    if(userId){
+    if (userId) {
       fetchUser(userId);
     }
-  },[userId])
+  }, [userId]);
 
-  const fetchUser = async(id: string) => {
-    const response = await fetch('https://tasks-8c581-default-rtdb.firebaseio.com/tasks/' + id + '.json');
+  const fetchUser = async (id: string) => {
+    const response = await fetch(
+      'https://tasks-8c581-default-rtdb.firebaseio.com/tasks/' + id + '.json'
+    );
     const responseData = await response.json();
-    console.log(responseData, 'single userid');
-    setUser(responseData);
-    console.log(user,'initial values')
-  }
+    form.setFieldsValue(responseData);
+  };
 
   const onFinish = (values: UserDataType) => {
     console.log('Success:', values);
-    // if(user){
-      // editTaskHandler(values)
-    // } else {
+    if (userId) {
+      editTaskHandler(userId, values);
+    } else {
       createTaskHandler(values);
-    // }
+    }
   };
 
   const onFinishFailed = (errorInfo: any) => {
     console.log('Failed:', errorInfo);
   };
 
-  const editTaskHandler = async(values: any) => {
-      console.log(values);
-      let data = {...values};
-      let response = await fetch('https://tasks-8c581-default-rtdb.firebaseio.com/tasks.json',{
+  const editTaskHandler = async (id: string, values: any) => {
+    console.log(values);
+    let data = { ...values };
+    let response = await fetch(
+      `https://tasks-8c581-default-rtdb.firebaseio.com/tasks/${id}.json`,
+      {
         method: 'PUT',
         body: JSON.stringify({
-          title : values.title,
+          title: values.title,
           description: values.description,
-        })
-      })
-      navigate("/");
-  }
-
-  const createTaskHandler = async(values: any) => {
-    await fetch('https://tasks-8c581-default-rtdb.firebaseio.com/tasks.json', {
-        method: 'POST',
-        body: JSON.stringify({
-            title: values.title,
-            description: values.description,
         }),
+      }
+    );
+    navigate('/');
+  };
+
+  const createTaskHandler = async (values: any) => {
+    await fetch('https://tasks-8c581-default-rtdb.firebaseio.com/tasks.json', {
+      method: 'POST',
+      body: JSON.stringify({
+        title: values.title,
+        description: values.description,
+      }),
     });
-    navigate("/");
-  }
+    navigate('/');
+  };
 
   return (
-      <Form
-        name="basic"
-        labelCol={{ span: 8 }}
-        wrapperCol={{ span: 16 }}
-        initialValues={{title : user.title ? user.title : "", description : user.description ? user.description : ""}}
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
-        autoComplete="off"
+    <Form
+      name="basic"
+      labelCol={{ span: 8 }}
+      wrapperCol={{ span: 16 }}
+      initialValues={initialValues}
+      onFinish={onFinish}
+      onFinishFailed={onFinishFailed}
+      autoComplete="off"
+      form={form}
+    >
+      <Form.Item
+        label="Title"
+        name="title"
+        rules={[{ required: true, message: 'Please input your title!' }]}
       >
-        <Form.Item
-          label="Title"
-          name="title"
-          rules={[{ required: true, message: 'Please input your title!' }]}
-        >
-          <Input />
-        </Form.Item>
+        <Input />
+      </Form.Item>
 
-        <Form.Item
-          label="Description"
-          name="description"
-          rules={[{ required: true, message: 'Please input your description!' }]}
-        >
-          <Input />
-        </Form.Item>
+      <Form.Item
+        label="Description"
+        name="description"
+        rules={[{ required: true, message: 'Please input your description!' }]}
+      >
+        <Input />
+      </Form.Item>
 
-        
-
-        <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-          <Button type="primary" htmlType="submit">
-            {/* {user ? "Update" : "Submit"} */}
-            Submit
-          </Button>
-        </Form.Item>
-      </Form>
+      <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+        <Button type="primary" htmlType="submit">
+          {/* {user ? "Update" : "Submit"} */}
+          Submit
+        </Button>
+      </Form.Item>
+    </Form>
   );
 };
 
