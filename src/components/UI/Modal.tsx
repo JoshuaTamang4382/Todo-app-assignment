@@ -1,22 +1,22 @@
 import { Button, Modal } from "antd";
 import { useState } from "react";
 
-const DeleteModal: React.FC = (props) => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
+const DeleteModal: React.FC<any> = (props) => {
+    // const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
-  const showModal = () => {
-    setIsModalOpen(true);
-  };
+  // const showModal = () => {
+  //   setIsModalOpen(true);
+  // };
 
-  const handleOk = () => {
-    setIsModalOpen(false);
-  };
+  // const handleOk = () => {
+  //   setIsModalOpen(false);
+  // };
 
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
+  // const handleCancel = () => {
+  //   setIsModalOpen(false);
+  // };
     return (
-        <Modal open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+        <Modal open={props.isModalOpen} onOk={props.handleOk} onCancel={props.handleCancel}>
             <div className='modalBody'>
                 Do you really want to delete?
             </div>

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import classes from './userTable.module.css';
-import { Button, Space, Table, Tag } from 'antd';
+import { Button, Space, Table, Modal } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import DeleteModal from '../UI/Modal';
 
 interface UserDataType {
@@ -15,6 +15,8 @@ interface UserDataType {
 
 const UserTable: React.FC = () => {
   let navigate = useNavigate();
+  const [taskId, setTaskId] = useState<string>("");
+   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [userData, setUserData] = useState<UserDataType[]>([]);
 
   useEffect(() => {
@@ -26,7 +28,6 @@ const UserTable: React.FC = () => {
       'https://tasks-8c581-default-rtdb.firebaseio.com/tasks.json'
     );
     const responseData = await response.json();
-    // console.log(responseData, 'aako data');
 
     const loadedTasks = [];
 
@@ -42,10 +43,17 @@ const UserTable: React.FC = () => {
     setUserData(loadedTasks);
   };
 
-  const deleteHandler = async (id: string) => {
-    console.log('delete han chito');
+  const deleteTaskHandler = (id : string) => {
+    setIsModalOpen(true);
+    setTaskId(id);
+  }
+
+  const closeModal = () => setIsModalOpen(false);
+
+  const deleteHandler = async(taskId: string) => {
+    setIsModalOpen(false);
     await fetch(
-      'https://tasks-8c581-default-rtdb.firebaseio.com/tasks/' + id + '.json',
+      'https://tasks-8c581-default-rtdb.firebaseio.com/tasks/' + taskId + '.json',
       {
         method: 'DELETE',
       }
@@ -77,20 +85,13 @@ const UserTable: React.FC = () => {
           <DeleteOutlined
             onClick={() => {
               console.log(user.id);
-              deleteHandler(user.id);
+              deleteTaskHandler(user.id);
             }}
           />
         </Space>
       ),
     },
   ];
-
-  // const addHandler = () => {
-
-  //     console.log('button chalena');
-  //     navigate("/");
-
-  // }
 
   return (
     <>
@@ -99,7 +100,11 @@ const UserTable: React.FC = () => {
         <Button onClick={() => navigate('/createUser')}>Add New</Button>
       </div>
       <Table columns={columns} dataSource={userData} />
-      <DeleteModal></DeleteModal>
+      <Modal open={isModalOpen} onOk={() => deleteHandler(taskId)} onCancel={closeModal}>
+            <div className='modalBody'>
+                Do you really want to delete?
+            </div>
+        </Modal>
     </>
   );
 };
